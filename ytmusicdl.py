@@ -13,12 +13,6 @@ ytmusic = YTMusic()
 
 # typer? who needs typer when you have input()?
 query = input("Query: ")
-# getting ID doesn't get you any metadata
-
-ytmusic = YTMusic()
-
-# typer? who needs typer when you have input()?
-query = input("Query: ")
 # getting ID doesn't get you any metadata so searching it is
 
 songs = [i for i in ytmusic.search(query) if i["resultType"] == "song"]
