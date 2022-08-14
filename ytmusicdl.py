@@ -58,7 +58,7 @@ audiofile.tag.save()
 audiofile.rename(new_name)
 
 # write lyric file
-with open(new_name.replace(".mp3", ".lrc"), "w", encoding="utf-8") as file:
+with open(f"{new_name}.lrc", "w", encoding="utf-8") as file:
     file.write(lyrics)
 
 # clean up
