@@ -28,7 +28,11 @@ art: str = song["thumbnails"][-1]["url"] if song["thumbnails"] else ""
 
 playlist = ytmusic.get_watch_playlist(video_id)
 lyric_id = playlist["lyrics"]
-lyrics = ytmusic.get_lyrics(lyric_id)["lyrics"]
+try:
+    lyrics = ytmusic.get_lyrics(lyric_id)["lyrics"]
+except Exception:
+    # no lyrics found
+    lyrics = None
 
 # download video
 video = YouTube(f"https://music.youtube.com/watch?v={video_id}")
@@ -57,9 +61,10 @@ new_name = TagTemplate(
 audiofile.tag.save()
 audiofile.rename(new_name)
 
-# write lyric file
-with open(f"{new_name}.lrc", "w", encoding="utf-8") as file:
-    file.write(lyrics)
+if lyrics:
+    # write lyric file
+    with open(f"{new_name}.lrc", "w", encoding="utf-8") as file:
+        file.write(lyrics)
 
 # clean up
 os.remove(f"{title}.mp4")
