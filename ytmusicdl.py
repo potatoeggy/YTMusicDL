@@ -22,7 +22,7 @@ song = songs[0]
 video_id: str = song["videoId"]
 title: str = song["title"]
 album: str = song["album"]["name"]
-year: str = song["year"] if song["year"] != "None" else ""
+year: str = song["year"] if song.get("year", "None") != "None" else ""
 artists: list[str] = [a["name"] for a in song["artists"]]
 art: str = song["thumbnails"][-1]["url"] if song["thumbnails"] else ""
 
