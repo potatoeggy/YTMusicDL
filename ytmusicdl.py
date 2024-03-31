@@ -16,9 +16,12 @@ query = input("Query: ")
 # getting ID doesn't get you any metadata so searching it is
 
 songs = [i for i in ytmusic.search(query) if i["resultType"] == "song"]
-# TODO: let user pick song
 
-song = songs[0]
+for i, song in enumerate(songs[:10], start=1):
+    print(f"{i}. {song['title']} - {song['artists'][0]['name']}")
+
+choice = int(input("Select a number: "))
+song = songs[choice-1]
 video_id: str = song["videoId"]
 title: str = song["title"]
 album: str = song["album"]["name"]
@@ -32,20 +35,27 @@ try:
     lyrics = ytmusic.get_lyrics(lyric_id)["lyrics"]
 except Exception:
     # no lyrics found
+    print("No lyrics found")
     lyrics = None
 
 # download video
 video = YouTube(f"https://music.youtube.com/watch?v={video_id}")
 video.streams.get_audio_only().download()
 
+mp_file = f"{title}.mp3"
+
 # convert video to mp3
-subprocess.run(["ffmpeg", "-i", f"{title}.mp4", f"{title}.mp3"], check=True)
+try:
+    subprocess.run(["ffmpeg", "-i", f"{title}.mp4", mp_file], check=True)
+except Exception:
+    mp_file = "output.mp3"
+#    subprocess.run(["ffmpeg", "-i", f"'{title}.mp4'", mp_file], check=True)
 
 
 # set metadata
-audiofile = eyed3.load(f"{title}.mp3")
+audiofile = eyed3.load(mp_file)
 audiofile.tag.title = title
-audiofile.tag.artist = "/".join(artists)
+audiofile.tag.artist = ",".join(artists)
 audiofile.tag.album = album
 audiofile.tag.year = year
 
